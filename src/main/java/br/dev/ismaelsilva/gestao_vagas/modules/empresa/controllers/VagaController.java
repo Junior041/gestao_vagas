@@ -19,12 +19,7 @@ public class VagaController {
     private CreateVagaUseCase createVagaUseCase;
 
     @PostMapping
-    public ResponseEntity<Object> create(@NotNull @Valid @RequestBody VagaEntity vagaEntity){
-        try {
-            VagaEntity result = this.createVagaUseCase.execute(vagaEntity);
-            return ResponseEntity.ok().body(result);
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public VagaEntity create(@NotNull @Valid @RequestBody VagaEntity vagaEntity){
+        return  this.createVagaUseCase.execute(vagaEntity);
     }
 }
