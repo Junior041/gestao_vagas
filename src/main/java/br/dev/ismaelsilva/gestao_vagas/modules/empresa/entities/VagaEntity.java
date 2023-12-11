@@ -26,7 +26,7 @@ public class VagaEntity {
     @JoinColumn(name = "empresa_id", insertable = false, updatable = false)
     private EmpresaEntity empresaEntity;
 
-    @Column(name = "empresa_id")
+    @Column(name = "empresa_id", nullable = false)
     private UUID empresaId;
 
     @CreationTimestamp
