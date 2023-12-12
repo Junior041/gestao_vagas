@@ -19,10 +19,10 @@ public class VagaEntity {
     private String description;
     private String benefits;
 
-    @NotBlank(message = "Esse campo é obrigatório. ")
+    @NotBlank(message = "Esse campo é obrigatório")
     private String level;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "empresa_id", insertable = false, updatable = false)
     private EmpresaEntity empresaEntity;
 
