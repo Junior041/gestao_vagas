@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -33,6 +35,7 @@ public class AuthEmpresaUseCase {
         }
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         String token = JWT.create().withIssuer("javagas")
+                .withExpiresAt(Instant.now().plus(Duration.ofHours(2)))
                 .withSubject(empresa.get().getId().toString())
                 .sign(algorithm)
         ;
