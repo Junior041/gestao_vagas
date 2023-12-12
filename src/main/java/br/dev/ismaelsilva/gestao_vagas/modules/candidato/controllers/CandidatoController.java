@@ -34,7 +34,7 @@ public class CandidatoController {
         }
     };
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<Object> get(HttpServletRequest request){
         var idCandidato = request.getAttribute("candidato_id");
         try {
