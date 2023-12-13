@@ -13,18 +13,20 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfig {
     @Autowired
     SecurityFilter securityFilter;
-
+    @Autowired
+    SecurityCandidatoFilter securityCandidatoFilter;
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/candidato").permitAll()
-                            .requestMatchers("/empresa").permitAll()
-                            .requestMatchers("/auth/**").permitAll();
+                    auth.requestMatchers("/candidato/").permitAll()
+                            .requestMatchers("/empresa/").permitAll()
+                            .requestMatchers("/empresa/auth").permitAll()
+                            .requestMatchers("/candidato/auth").permitAll();
                     auth.anyRequest().authenticated();
                 })
-                .addFilterBefore(this.securityFilter, BasicAuthenticationFilter.class)
-        ;
+                .addFilterBefore(securityCandidatoFilter, BasicAuthenticationFilter.class)
+                .addFilterBefore(securityFilter, BasicAuthenticationFilter.class);
         return http.build();
     }
 
