@@ -6,7 +6,9 @@ import br.dev.ismaelsilva.gestao_vagas.modules.candidato.CandidatoEntity;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.CandidatoRepository;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.dto.ProfileCandidatoResponseDto;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.useCases.CreateCandidatoUseCase;
+import br.dev.ismaelsilva.gestao_vagas.modules.candidato.useCases.ListAllVagasByFilterUseCase;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.useCases.ProfileCandidatoUseCase;
+import br.dev.ismaelsilva.gestao_vagas.modules.empresa.entities.VagaEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -22,6 +25,9 @@ import java.util.UUID;
 public class CandidatoController {
     @Autowired
     private CreateCandidatoUseCase createCandidatoUseCase;
+
+    @Autowired
+    private ListAllVagasByFilterUseCase listAllVagasByFilterUseCase;
 
     @Autowired
     private ProfileCandidatoUseCase profileCandidatoUseCase;
@@ -47,4 +53,9 @@ public class CandidatoController {
         }
     }
 
+    @GetMapping("/vagas")
+    @PreAuthorize("hasRole('CANDIDATO')")
+    public List<VagaEntity> findJobByFilter(@RequestParam String filter){
+        return this.listAllVagasByFilterUseCase.execute(filter);
+    }
 }
