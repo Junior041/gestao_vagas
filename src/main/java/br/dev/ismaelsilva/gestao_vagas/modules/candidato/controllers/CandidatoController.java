@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -35,7 +36,8 @@ public class CandidatoController {
     };
 
     @GetMapping
-    public ResponseEntity<Object> get(HttpServletRequest request){
+    @PreAuthorize("hasRole('CANDIDATO')")
+    public ResponseEntity<Object> get(@NotNull HttpServletRequest request){
         var idCandidato = request.getAttribute("candidato_id");
         try {
             ProfileCandidatoResponseDto profile =  this.profileCandidatoUseCase.execute(UUID.fromString(idCandidato.toString()));
