@@ -30,10 +30,16 @@ public class AuthEmpresaUseCase {
     private EmpresaRepository empresaRepository;
     public AuthEmpresaResponseDto execute(AuthEmpresaDto authEmpresaDto) throws AuthenticationException {
         var empresa = this.empresaRepository.findByUsername(authEmpresaDto.getUsername());
+
+        if (empresa.isEmpty()){
+            throw new AuthenticationException("Username/password incorretos.");
+
+        }
+
         Boolean passwordMatches = this.passwordEncoder.matches(authEmpresaDto.getPassword(), empresa.get().getPassword());
 
         if (!passwordMatches){
-            throw new AuthenticationException();
+            throw new AuthenticationException("Username/password incorretos.");
         }
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         var expiresIn = Instant.now().plus(Duration.ofHours(2));

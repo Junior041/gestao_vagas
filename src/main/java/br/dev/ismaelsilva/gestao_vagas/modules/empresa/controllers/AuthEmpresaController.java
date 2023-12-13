@@ -24,8 +24,8 @@ public class AuthEmpresaController {
         try{
             var result = this.authEmpresaUseCase.execute(authEmpresaDto);
             return ResponseEntity.ok().body(result);
-        }catch(Exception e){
-            return (ResponseEntity<Object>) ResponseEntity.status(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
 
