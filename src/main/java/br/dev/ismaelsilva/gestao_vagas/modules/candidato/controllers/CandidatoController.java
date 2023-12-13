@@ -28,6 +28,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/candidato")
+@Tag(name = "Candidato", description = "Informações do candidato")
 public class CandidatoController {
     @Autowired
     private CreateCandidatoUseCase createCandidatoUseCase;
@@ -38,6 +39,16 @@ public class CandidatoController {
     @Autowired
     private ProfileCandidatoUseCase profileCandidatoUseCase;
     @PostMapping
+    @Operation(
+            summary = "Cadastro de candidato",
+            description = "Essa função é responsável por cadastrar um candidato"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema =  @Schema(implementation = CandidatoEntity.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Usuário já existe")
+    })
     public ResponseEntity<Object> create(@NotNull @Valid @RequestBody CandidatoEntity candidatoEntity){
         try{
             CandidatoEntity result = this.createCandidatoUseCase.execute(candidatoEntity);
@@ -49,7 +60,6 @@ public class CandidatoController {
 
     @GetMapping
     @PreAuthorize("hasRole('CANDIDATO')")
-    @Tag(name = "Candidato", description = "Informações do candidato")
     @Operation(
             summary = "Perfil do candidato",
             description = "Essa função é responsável por buscar as informações do perfil do candidato"
@@ -73,7 +83,6 @@ public class CandidatoController {
 
     @GetMapping("/vagas")
     @PreAuthorize("hasRole('CANDIDATO')")
-    @Tag(name = "Candidato", description = "Informações de vagas.")
     @Operation(
             summary = "Listagem de vagas disponíveis para o candidato",
             description = "Essa função é responsável por listar todas as vagas com base no filtro"
