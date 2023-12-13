@@ -1,9 +1,7 @@
 package br.dev.ismaelsilva.gestao_vagas.modules.candidato.controllers;
 
 
-import br.dev.ismaelsilva.gestao_vagas.exception.UserAlreadyExists;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.CandidatoEntity;
-import br.dev.ismaelsilva.gestao_vagas.modules.candidato.CandidatoRepository;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.dto.ProfileCandidatoResponseDto;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.useCases.CreateCandidatoUseCase;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.useCases.ListAllVagasByFilterUseCase;
@@ -51,6 +49,18 @@ public class CandidatoController {
 
     @GetMapping
     @PreAuthorize("hasRole('CANDIDATO')")
+    @Tag(name = "Candidato", description = "Informações do candidato")
+    @Operation(
+            summary = "Perfil do candidato",
+            description = "Essa função é responsável por buscar as informações do perfil do candidato"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema =  @Schema(implementation = ProfileCandidatoResponseDto.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Usuário não encontrado")
+    })
+    @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<Object> get(@NotNull HttpServletRequest request){
         var idCandidato = request.getAttribute("candidato_id");
         try {
@@ -63,7 +73,7 @@ public class CandidatoController {
 
     @GetMapping("/vagas")
     @PreAuthorize("hasRole('CANDIDATO')")
-    @Tag(name = "Candidato", description = "Informações do candidato.")
+    @Tag(name = "Candidato", description = "Informações de vagas.")
     @Operation(
             summary = "Listagem de vagas disponíveis para o candidato",
             description = "Essa função é responsável por listar todas as vagas com base no filtro"
