@@ -22,7 +22,7 @@ public class AuthEmpresaController {
     @PostMapping("/auth")
     public ResponseEntity<Object> create(@RequestBody AuthEmpresaDto authEmpresaDto) throws AuthenticationException {
         try{
-            String result = this.authEmpresaUseCase.execute(authEmpresaDto);
+            var result = this.authEmpresaUseCase.execute(authEmpresaDto);
             return ResponseEntity.ok().body(result);
         }catch(Exception e){
             return (ResponseEntity<Object>) ResponseEntity.status(HttpStatus.UNAUTHORIZED);
