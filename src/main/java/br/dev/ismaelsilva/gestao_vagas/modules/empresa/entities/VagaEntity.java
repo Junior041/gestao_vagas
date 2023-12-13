@@ -1,5 +1,6 @@
 package br.dev.ismaelsilva.gestao_vagas.modules.empresa.entities;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class VagaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     private String description;
     private String benefits;
 
