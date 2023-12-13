@@ -10,5 +10,5 @@ import java.util.UUID;
 @Repository
 public interface VagaRepository extends JpaRepository<VagaEntity, UUID> {
     //"contains - LIKE "
-    List<VagaEntity> findByDescriptionContaining(String filter);
+    List<VagaEntity> findByDescriptionContainingIgnoreCase(String filter);
 }

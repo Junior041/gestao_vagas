@@ -12,6 +12,6 @@ public class ListAllVagasByFilterUseCase {
     @Autowired
     private VagaRepository vagaRepository;
     public List<VagaEntity> execute(String filter){
-        return this.vagaRepository.findByDescriptionContaining(filter);
+        return this.vagaRepository.findByDescriptionContainingIgnoreCase(filter);
     }
 }
