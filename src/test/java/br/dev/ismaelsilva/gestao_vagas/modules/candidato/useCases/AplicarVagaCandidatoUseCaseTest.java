@@ -3,6 +3,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import br.dev.ismaelsilva.gestao_vagas.exception.UserNotFoundException;
+import br.dev.ismaelsilva.gestao_vagas.exception.VagaAlreadyAplicada;
 import br.dev.ismaelsilva.gestao_vagas.exception.VagaNotFoundException;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.entities.AplicarVagaEntity;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.entities.CandidatoEntity;
@@ -57,6 +58,28 @@ public class AplicarVagaCandidatoUseCaseTest {
         }catch (Exception e){
             assertThat(e).isInstanceOf(VagaNotFoundException.class);
         }
+    }
+
+    @Test
+    @DisplayName("Não deve ser possivel aplicar a vaga caso ela ja esteja aplicada")
+    public void nao_deve_ser_possivel_aplicar_vaga_repetida(){
+        UUID idCandidato = UUID.randomUUID();
+        UUID idVaga = UUID.randomUUID();
+        when(candidatoRepository.findById(idCandidato)).thenReturn(Optional.of(new CandidatoEntity()));
+        when(vagaRepository.findById(idVaga)).thenReturn(Optional.of(new VagaEntity()));
+        when(aplicarVagaRepository.findAplicarVagaByVagaIdAndCandidatoId(idVaga, idCandidato)).thenReturn(Optional.of(new AplicarVagaEntity()));
+        AplicarVagaEntity aplicarVagaEntity = AplicarVagaEntity.builder()
+                .id(UUID.randomUUID())
+                .candidatoId(idCandidato)
+                .vagaId(idVaga)
+                .build();
+
+        try {
+            this.applyVagaCandidatoUseCase.execute(idCandidato, idVaga);
+        }catch (Exception e){
+            assertThat(e).isInstanceOf(VagaAlreadyAplicada.class);
+        }
+
     }
 
     @Test
