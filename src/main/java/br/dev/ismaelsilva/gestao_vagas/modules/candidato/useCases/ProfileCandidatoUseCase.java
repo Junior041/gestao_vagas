@@ -1,5 +1,6 @@
 package br.dev.ismaelsilva.gestao_vagas.modules.candidato.useCases;
 
+import br.dev.ismaelsilva.gestao_vagas.exception.UserNotFoundException;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.entities.CandidatoEntity;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.repoitories.CandidatoRepository;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.dto.ProfileCandidatoResponseDto;
@@ -16,7 +17,7 @@ public class ProfileCandidatoUseCase {
     private CandidatoRepository candidatoRepository;
     public ProfileCandidatoResponseDto execute(UUID idCandidato){
         CandidatoEntity candidato = this.candidatoRepository.findById(idCandidato).orElseThrow(() -> {
-            throw new UsernameNotFoundException("Usuário não encontrado");
+            throw new UserNotFoundException();
         });
     ProfileCandidatoResponseDto response = ProfileCandidatoResponseDto
             .builder()
