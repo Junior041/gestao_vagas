@@ -1,8 +1,10 @@
 package br.dev.ismaelsilva.gestao_vagas.modules.candidato.controllers;
 
 
+import br.dev.ismaelsilva.gestao_vagas.modules.candidato.entities.AplicarVagaEntity;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.entities.CandidatoEntity;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.dto.ProfileCandidatoResponseDto;
+import br.dev.ismaelsilva.gestao_vagas.modules.candidato.useCases.AplicarVagaCandidatoUseCase;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.useCases.CreateCandidatoUseCase;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.useCases.ListAllVagasByFilterUseCase;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.useCases.ProfileCandidatoUseCase;
@@ -32,12 +34,14 @@ import java.util.UUID;
 public class CandidatoController {
     @Autowired
     private CreateCandidatoUseCase createCandidatoUseCase;
-
+    @Autowired
+    private AplicarVagaCandidatoUseCase aplicarVagaCandidatoUseCase;
     @Autowired
     private ListAllVagasByFilterUseCase listAllVagasByFilterUseCase;
 
     @Autowired
     private ProfileCandidatoUseCase profileCandidatoUseCase;
+
     @PostMapping
     @Operation(
             summary = "Cadastro de candidato",
@@ -45,18 +49,20 @@ public class CandidatoController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
-                    @Content(schema =  @Schema(implementation = CandidatoEntity.class))
+                    @Content(schema = @Schema(implementation = CandidatoEntity.class))
             }),
             @ApiResponse(responseCode = "400", description = "Usuário já existe")
     })
-    public ResponseEntity<Object> create(@NotNull @Valid @RequestBody CandidatoEntity candidatoEntity){
-        try{
+    public ResponseEntity<Object> create(@NotNull @Valid @RequestBody CandidatoEntity candidatoEntity) {
+        try {
             CandidatoEntity result = this.createCandidatoUseCase.execute(candidatoEntity);
             return ResponseEntity.ok().body(result);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    };
+    }
+
+    ;
 
     @GetMapping
     @PreAuthorize("hasRole('CANDIDATO')")
@@ -66,17 +72,17 @@ public class CandidatoController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
-                    @Content(schema =  @Schema(implementation = ProfileCandidatoResponseDto.class))
+                    @Content(schema = @Schema(implementation = ProfileCandidatoResponseDto.class))
             }),
             @ApiResponse(responseCode = "400", description = "Usuário não encontrado")
     })
     @SecurityRequirement(name = "jwt_auth")
-    public ResponseEntity<Object> get(@NotNull HttpServletRequest request){
+    public ResponseEntity<Object> get(@NotNull HttpServletRequest request) {
         var idCandidato = request.getAttribute("candidato_id");
         try {
-            ProfileCandidatoResponseDto profile =  this.profileCandidatoUseCase.execute(UUID.fromString(idCandidato.toString()));
+            ProfileCandidatoResponseDto profile = this.profileCandidatoUseCase.execute(UUID.fromString(idCandidato.toString()));
             return ResponseEntity.ok().body(profile);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -93,7 +99,29 @@ public class CandidatoController {
             })
     })
     @SecurityRequirement(name = "jwt_auth")
-    public List<VagaEntity> findJobByFilter(@RequestParam String filter){
+    public List<VagaEntity> findJobByFilter(@RequestParam String filter) {
         return this.listAllVagasByFilterUseCase.execute(filter);
+    }
+
+    @PostMapping("/aplicar-vaga")
+    @PreAuthorize("hasRole('CANDIDATO')")
+    @SecurityRequirement(name = "jwt_auth")
+    @Operation(
+            summary = "Aplicar candidato na vaga",
+            description = "Essa função é responsável aplicar o candidato na vaga desejada"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = AplicarVagaEntity.class))
+            })
+    })
+    public ResponseEntity<Object> aplicarVaga(HttpServletRequest request, @RequestBody String idVaga) {
+        var idCandidato = request.getAttribute("candidato_id");
+        try {
+            AplicarVagaEntity aplicarVagaResponse = this.aplicarVagaCandidatoUseCase.execute(UUID.fromString(idCandidato.toString()), UUID.fromString(idVaga));
+            return ResponseEntity.ok().body(aplicarVagaResponse);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
