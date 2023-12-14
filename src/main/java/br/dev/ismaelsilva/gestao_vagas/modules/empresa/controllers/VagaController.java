@@ -1,10 +1,11 @@
 package br.dev.ismaelsilva.gestao_vagas.modules.empresa.controllers;
 
+import br.dev.ismaelsilva.gestao_vagas.exception.EmpresaNaoEncontrada;
 import br.dev.ismaelsilva.gestao_vagas.modules.empresa.dto.CreateVagaDto;
 import br.dev.ismaelsilva.gestao_vagas.modules.empresa.entities.VagaEntity;
+import br.dev.ismaelsilva.gestao_vagas.modules.empresa.repositories.EmpresaRepository;
 import br.dev.ismaelsilva.gestao_vagas.modules.empresa.useCases.CreateVagaUseCase;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,15 +44,22 @@ public class VagaController {
             })
     })
     @SecurityRequirement(name = "jwt_auth")
-    public VagaEntity create(@Valid @RequestBody CreateVagaDto createVagaDto, HttpServletRequest request){
-        System.out.println(request.getAttribute("empresa_id").toString());
-        VagaEntity vagaEntity = VagaEntity.builder()
-                .benefits(createVagaDto.getBenefits())
-                .description(createVagaDto.getDescription())
-                .level(createVagaDto.getLevel())
-                .empresaId(UUID.fromString(request.getAttribute("empresa_id").toString()))
-                .build();
+    public ResponseEntity<Object> create(@Valid @RequestBody CreateVagaDto createVagaDto, HttpServletRequest request) {
+        try {
+            UUID empresaId = UUID.fromString(request.getAttribute("empresa_id").toString());
 
-        return this.createVagaUseCase.execute(vagaEntity);
+            VagaEntity vagaEntity = VagaEntity.builder()
+                    .benefits(createVagaDto.getBenefits())
+                    .description(createVagaDto.getDescription())
+                    .level(createVagaDto.getLevel())
+                    .empresaId(empresaId)
+                    .build();
+
+            var result = this.createVagaUseCase.execute(vagaEntity);
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 }

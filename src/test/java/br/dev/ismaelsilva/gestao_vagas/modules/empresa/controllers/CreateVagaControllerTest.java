@@ -1,9 +1,11 @@
 package br.dev.ismaelsilva.gestao_vagas.modules.empresa.controllers;
 
+import br.dev.ismaelsilva.gestao_vagas.exception.EmpresaNaoEncontrada;
 import br.dev.ismaelsilva.gestao_vagas.modules.empresa.dto.CreateVagaDto;
 import br.dev.ismaelsilva.gestao_vagas.modules.empresa.entities.EmpresaEntity;
 import br.dev.ismaelsilva.gestao_vagas.modules.empresa.repositories.EmpresaRepository;
 import br.dev.ismaelsilva.gestao_vagas.modules.utils.TestUtils;
+import jdk.jfr.Description;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -37,6 +41,7 @@ public class CreateVagaControllerTest {
     }
 
     @Test
+    @Description("Deve verificar se é possivel criar uma nova vaga")
     public void deve_ser_possivel_criar_uma_nova_vaga() throws Exception {
 
         EmpresaEntity empresaEntity = EmpresaEntity.builder()
@@ -62,5 +67,27 @@ public class CreateVagaControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
     }
+
+    @Test
+    @Description("Não deve ser possível criar uma vaga se a empresa não for valida")
+    public void nao_deve_ser_possivel_criar_uma_vaga_se_a_empresa_nao_for_valida() throws Exception {
+        CreateVagaDto vagaDto = CreateVagaDto.builder()
+                .benefits("BENEFITS_TEST")
+                .description("DESCRIPTION_TEST")
+                .level("LEVEL_TEST")
+                .build();
+
+        try {
+            mvc.perform(MockMvcRequestBuilders.post("/empresa/vaga/")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(TestUtils.objectToJSON(vagaDto))
+                    .header("Authorization", TestUtils.generateToken(UUID.randomUUID()))
+            );
+        } catch (Exception e) {
+            assertThat(e).isInstanceOf(EmpresaNaoEncontrada.class);
+        }
+
+    }
+
 
 }
