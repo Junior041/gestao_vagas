@@ -76,17 +76,10 @@ public class CreateVagaControllerTest {
                 .description("DESCRIPTION_TEST")
                 .level("LEVEL_TEST")
                 .build();
-
-        try {
-            mvc.perform(MockMvcRequestBuilders.post("/empresa/vaga/")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtils.objectToJSON(vagaDto))
-                    .header("Authorization", TestUtils.generateToken(UUID.randomUUID()))
-            );
-        } catch (Exception e) {
-            assertThat(e).isInstanceOf(EmpresaNaoEncontrada.class);
-        }
-
+        mvc.perform(MockMvcRequestBuilders.post("/empresa/vaga/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtils.objectToJSON(vagaDto))
+                .header("Authorization", TestUtils.generateToken(UUID.randomUUID()))).andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
 

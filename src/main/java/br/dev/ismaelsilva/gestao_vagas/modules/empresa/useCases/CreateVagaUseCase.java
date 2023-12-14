@@ -12,6 +12,7 @@ public class CreateVagaUseCase {
 
     @Autowired
     private VagaRepository vagaRepository;
+    @Autowired
     private EmpresaRepository empresaRepository;
 
     public VagaEntity execute(VagaEntity vagaEntity){
