@@ -1,4 +1,4 @@
-package br.dev.ismaelsilva.gestao_vagas.modules.candidato;
+package br.dev.ismaelsilva.gestao_vagas.modules.candidato.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Length;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 @Data

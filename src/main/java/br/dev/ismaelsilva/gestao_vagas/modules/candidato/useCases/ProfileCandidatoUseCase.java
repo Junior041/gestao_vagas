@@ -1,7 +1,7 @@
 package br.dev.ismaelsilva.gestao_vagas.modules.candidato.useCases;
 
-import br.dev.ismaelsilva.gestao_vagas.modules.candidato.CandidatoEntity;
-import br.dev.ismaelsilva.gestao_vagas.modules.candidato.CandidatoRepository;
+import br.dev.ismaelsilva.gestao_vagas.modules.candidato.entities.CandidatoEntity;
+import br.dev.ismaelsilva.gestao_vagas.modules.candidato.repoitories.CandidatoRepository;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.dto.ProfileCandidatoResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

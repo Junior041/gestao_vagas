@@ -1,6 +1,6 @@
 package br.dev.ismaelsilva.gestao_vagas.modules.candidato.useCases;
 
-import br.dev.ismaelsilva.gestao_vagas.modules.candidato.CandidatoRepository;
+import br.dev.ismaelsilva.gestao_vagas.modules.candidato.repoitories.CandidatoRepository;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.dto.AuthCandidatoRequestDto;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.dto.AuthCandidatoResponseDto;
 import com.auth0.jwt.JWT;

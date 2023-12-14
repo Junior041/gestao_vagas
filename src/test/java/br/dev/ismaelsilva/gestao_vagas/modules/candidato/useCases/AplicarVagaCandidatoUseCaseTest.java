@@ -1,9 +1,14 @@
 package br.dev.ismaelsilva.gestao_vagas.modules.candidato.useCases;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import br.dev.ismaelsilva.gestao_vagas.exception.UserNotFoundException;
 import br.dev.ismaelsilva.gestao_vagas.exception.VagaNotFoundException;
-import br.dev.ismaelsilva.gestao_vagas.modules.candidato.CandidatoEntity;
-import br.dev.ismaelsilva.gestao_vagas.modules.candidato.CandidatoRepository;
+import br.dev.ismaelsilva.gestao_vagas.modules.candidato.entities.AplicarVagaEntity;
+import br.dev.ismaelsilva.gestao_vagas.modules.candidato.entities.CandidatoEntity;
+import br.dev.ismaelsilva.gestao_vagas.modules.candidato.repoitories.AplicarVagaRepository;
+import br.dev.ismaelsilva.gestao_vagas.modules.candidato.repoitories.CandidatoRepository;
+import br.dev.ismaelsilva.gestao_vagas.modules.empresa.entities.VagaEntity;
 import br.dev.ismaelsilva.gestao_vagas.modules.empresa.repositories.VagaRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,15 +23,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @ExtendWith(MockitoExtension.class)
-public class ApplyVagaCandidatoUseCaseTest {
+public class AplicarVagaCandidatoUseCaseTest {
     @Mock
     CandidatoRepository candidatoRepository;
 
     @Mock
     VagaRepository vagaRepository;
 
+    @Mock
+    AplicarVagaRepository aplicarVagaRepository;
+
     @InjectMocks
-    private ApplyVagaCandidatoUseCase applyVagaCandidatoUseCase;
+    private AplicarVagaCandidatoUseCase applyVagaCandidatoUseCase;
     @Test
     @DisplayName("Não deve ser possivel aplica a vaga se o candidato não existir")
     public void nao_deve_ser_possivel_aplicar_a_vaga_se_o_candidato_nao_existir (){
@@ -51,6 +59,24 @@ public class ApplyVagaCandidatoUseCaseTest {
         }
     }
 
+    @Test
+    @DisplayName("Deve ser possivel aplicar a vaga")
+    public void deve_ser_possivel_aplicar_a_vaga(){
+        UUID idCandidato = UUID.randomUUID();
+        UUID idVaga = UUID.randomUUID();
+        when(candidatoRepository.findById(idCandidato)).thenReturn(Optional.of(new CandidatoEntity()));
+        when(vagaRepository.findById(idVaga)).thenReturn(Optional.of(new VagaEntity()));
+
+        AplicarVagaEntity aplicarVagaEntity = AplicarVagaEntity.builder()
+                .id(UUID.randomUUID())
+                .candidatoId(idCandidato)
+                .vagaId(idVaga)
+                .build();
+        when(aplicarVagaRepository.save(any(AplicarVagaEntity.class))).thenReturn(aplicarVagaEntity);
+        var result = this.applyVagaCandidatoUseCase.execute(idCandidato, idVaga);
+        assertThat(result).hasFieldOrProperty("id");
+        assertNotNull(result.getId());
+    }
 
 }
 
