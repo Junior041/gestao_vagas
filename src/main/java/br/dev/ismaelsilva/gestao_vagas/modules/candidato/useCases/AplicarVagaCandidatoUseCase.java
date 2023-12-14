@@ -1,6 +1,7 @@
 package br.dev.ismaelsilva.gestao_vagas.modules.candidato.useCases;
 
 import br.dev.ismaelsilva.gestao_vagas.exception.UserNotFoundException;
+import br.dev.ismaelsilva.gestao_vagas.exception.VagaAlreadyAplicada;
 import br.dev.ismaelsilva.gestao_vagas.exception.VagaNotFoundException;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.entities.AplicarVagaEntity;
 import br.dev.ismaelsilva.gestao_vagas.modules.candidato.repoitories.AplicarVagaRepository;
@@ -29,6 +30,10 @@ public class AplicarVagaCandidatoUseCase {
 
         this.vagaRepository.findById(idVaga).orElseThrow(() -> {
             throw new VagaNotFoundException();
+        });
+
+        this.aplicarVagaRepository.findAplicarVagaByVagaIdAndCandidatoId(idVaga, idCandidato).ifPresent((aplicarVagaEntity) -> {
+            throw new VagaAlreadyAplicada();
         });
 
         AplicarVagaEntity aplicarVagaEntity = AplicarVagaEntity.builder()
