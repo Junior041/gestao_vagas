@@ -29,7 +29,7 @@ public class VagaController {
     @Autowired
     private CreateVagaUseCase createVagaUseCase;
 
-    @PostMapping
+    @PostMapping("/")
     @PreAuthorize("hasRole('EMPRESA')")
     @Tag(name = "Vagas", description = "Informações das Vagas.")
     @Operation(
